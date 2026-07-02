@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publications · Aldrin Ngorima</title>
+<meta name="description" content="Publications, preprints and conference presentations by Dr Simbarashe Aldrin Ngorima.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFBFC;
+    --ink: #0E1B2C;
+    --ink-soft: #3D4A5C;
+    --amber: #E8A33D;
+    --amber-deep: #C77F1A;
+    --rule: rgba(14, 27, 44, 0.14);
+    --card: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--amber); color: var(--ink); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  a:focus-visible { outline: 2px solid var(--amber-deep); outline-offset: 3px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(250, 251, 252, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner { display: flex; align-items: baseline; justify-content: space-between; padding: 16px 0; }
+  .nav-name {
+    font-family: 'STIX Two Text', serif; font-weight: 700; font-size: 18px;
+    color: var(--ink); text-decoration: none;
+  }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    color: var(--ink-soft); text-decoration: none; margin-left: 20px;
+  }
+  .nav-links a:hover { color: var(--amber-deep); }
+
+  header { padding: 64px 0 40px; border-bottom: 1px solid var(--rule); }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--amber-deep); margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'STIX Two Text', serif; font-weight: 700;
+    font-size: clamp(34px, 5vw, 48px); letter-spacing: -0.015em; margin-bottom: 14px;
+  }
+  header p { color: var(--ink-soft); max-width: 60ch; }
+  header a { color: var(--amber-deep); }
+
+  section { padding: 48px 0 8px; }
+  h2 {
+    font-family: 'STIX Two Text', serif; font-weight: 600; font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .pub-list { list-style: none; }
+  .pub-list li {
+    padding: 20px 0; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 34px 1fr; gap: 14px;
+  }
+  .pub-num {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    color: var(--amber-deep); padding-top: 3px;
+  }
+  .pub-title { font-weight: 600; }
+  .pub-venue { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .pub-status {
+    display: inline-block; font-size: 11.5px; padding: 1px 8px;
+    border: 1px solid var(--amber); border-radius: 20px;
+    color: var(--amber-deep); margin-left: 8px; vertical-align: 1px; white-space: nowrap;
+  }
+  .pub-link {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink);
+    text-decoration: none; border-bottom: 1px solid var(--amber);
+    padding-bottom: 1px; display: inline-block; margin-top: 8px;
+  }
+  .pub-link:hover { color: var(--amber-deep); }
+
+  .talk-list { list-style: none; max-width: 640px; }
+  .talk-list li { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .talk-list .sub { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); display: block; }
+
+  footer {
+    margin-top: 56px; border-top: 1px solid var(--rule);
+    padding: 28px 0 40px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft);
+  }
+  footer a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--amber); padding-bottom: 1px; }
+  footer a:hover { color: var(--amber-deep); }
+
+  @media (max-width: 860px) {
+    .nav-links a { margin-left: 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="nav-name" href="index.html">A. Ngorima</a>
+    <div class="nav-links">
+      <a href="index.html#about">About</a>
+      <a href="index.html#research">Research</a>
+      <a href="index.html#prosthetics">Prosthetics</a>
+      <a href="index.html#teaching">Teaching</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <p class="section-label">Publications</p>
+    <h1>Papers, preprints &amp; presentations</h1>
+    <p>All publications with Prof. Albert S.J. Helberg and Prof. Marelie H. Davel, MUST Deep Learning, North-West University. An up-to-date list is also available on <a href="https://scholar.google.com/citations?user=7IZaxCMAAAAJ&amp;hl=en">Google Scholar</a>.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Under review</h2>
+    <ol class="pub-list">
+      <li>
+        <span class="pub-num">01</span>
+        <span>
+          <span class="pub-title">Convolutional DPA Refinement for Real-Time Channel Estimation in High-Mobility Vehicular Networks</span><span class="pub-status">under review</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE Access · PhD core contribution</span>
+        </span>
+      </li>
+      <li>
+        <span class="pub-num">02</span>
+        <span>
+          <span class="pub-title">REACH: Interpretability-Driven Feature Identification and Architecture Compression for Multi-Channel Vehicular Channel Estimation</span><span class="pub-status">under review</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE Transactions on Machine Learning in Communications and Networking · submitted 2026</span>
+          <br><a class="pub-link" href="https://arxiv.org/abs/2606.11857">arXiv:2606.11857 →</a>
+        </span>
+      </li>
+      <li>
+        <span class="pub-num">03</span>
+        <span>
+          <span class="pub-title">Joint Interpretability-Guided Pruning and Near-Optimal Weight Quantisation for Deep Vehicular Channel Estimators</span><span class="pub-status">under review</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE GLOBECOM 2026</span>
+        </span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Refereed publications</h2>
+    <ol class="pub-list">
+      <li>
+        <span class="pub-num">04</span>
+        <span>
+          <span class="pub-title">Simplified Temporal Convolutional Based Channel Estimation for a WiFi Vehicular Communication Channel</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE VTS Wireless Africa Conference, 2025</span>
+          <br><a class="pub-link" href="https://doi.org/10.1109/WAC63911.2025.10992609">doi:10.1109/WAC63911.2025.10992609 →</a>
+        </span>
+      </li>
+      <li>
+        <span class="pub-num">05</span>
+        <span>
+          <span class="pub-title">Feature Extraction for Plant Growth Estimation</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · Communications in Computer and Information Science, vol. 2784, Springer, Cham, 2025</span>
+          <br><a class="pub-link" href="https://doi.org/10.1007/978-3-032-11733-5_5">doi:10.1007/978-3-032-11733-5_5 →</a>
+        </span>
+      </li>
+      <li>
+        <span class="pub-num">06</span>
+        <span>
+          <span class="pub-title">Neural Network-Based Vehicular Channel Estimation Performance: Effect of Noise in the Training Set</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · Communications in Computer and Information Science, vol. 2326, Springer, Cham, 2024</span>
+          <br><a class="pub-link" href="https://doi.org/10.1007/978-3-031-78255-8_12">doi:10.1007/978-3-031-78255-8_12 →</a>
+        </span>
+      </li>
+      <li>
+        <span class="pub-num">07</span>
+        <span>
+          <span class="pub-title">A Data Pilot-Aided Temporal Convolutional Network for Channel Estimation in IEEE 802.11p Vehicle-to-Vehicle Communications</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · Southern Africa Telecommunication Networks and Applications Conference (SATNAC), 2024</span>
+        </span>
+      </li>
+      <li>
+        <span class="pub-num">08</span>
+        <span>
+          <span class="pub-title">Sequence-Based Deep Neural Networks for Channel Estimation in Vehicular Communication Systems</span><br>
+          <span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · Communications in Computer and Information Science, vol. 1976, Springer, Cham, 2023</span>
+          <br><a class="pub-link" href="https://doi.org/10.1007/978-3-031-49002-6_12">doi:10.1007/978-3-031-49002-6_12 →</a>
+        </span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Conference presentations</h2>
+    <ul class="talk-list">
+      <li>IEEE VTS Wireless Africa Conference<span class="sub">2025</span></li>
+      <li>Southern African Conference for Artificial Intelligence Research (SACAIR)<span class="sub">2023, 2024</span></li>
+      <li>Southern Africa Telecommunication Networks and Applications Conference (SATNAC)<span class="sub">2024</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="index.html">← Back to home</a> · <a href="assets/Ngorima_CV.pdf">Download CV (PDF)</a>
+  </div>
+</footer>
+
+</body>
+</html>
