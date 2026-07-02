@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aldrin Ngorima · Deep learning for signals that move</title>
+<meta name="description" content="Dr Simbarashe Aldrin Ngorima is a postdoctoral researcher at MUST Deep Learning, North-West University, designing efficient, interpretable neural networks for wireless channels, vehicles and the human gait.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFBFC;
+    --ink: #0E1B2C;
+    --ink-soft: #3D4A5C;
+    --amber: #E8A33D;
+    --amber-deep: #C77F1A;
+    --grid-line: rgba(14, 27, 44, 0.055);
+    --rule: rgba(14, 27, 44, 0.14);
+    --card: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--amber); color: var(--ink); }
+  .grid-bg {
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(250, 251, 252, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner { display: flex; align-items: baseline; justify-content: space-between; padding: 16px 0; }
+  .nav-name {
+    font-family: 'STIX Two Text', serif; font-weight: 700; font-size: 18px;
+    letter-spacing: 0.01em; color: var(--ink); text-decoration: none;
+  }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    color: var(--ink-soft); text-decoration: none; margin-left: 20px;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--amber-deep); }
+  a:focus-visible { outline: 2px solid var(--amber-deep); outline-offset: 3px; }
+
+  header.hero { border-bottom: 1px solid var(--rule); }
+  .hero-inner {
+    display: grid; grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px; align-items: center; padding: 84px 0 68px;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    letter-spacing: 0.04em; color: var(--ink-soft); margin-bottom: 20px;
+  }
+  .eyebrow .dot { color: var(--amber-deep); }
+  h1 {
+    font-family: 'STIX Two Text', serif; font-weight: 700;
+    font-size: clamp(40px, 5.4vw, 62px); line-height: 1.06;
+    letter-spacing: -0.015em; margin-bottom: 22px;
+  }
+  h1 .accent { color: var(--amber-deep); font-style: italic; font-weight: 600; }
+  .subhead { font-size: 19px; color: var(--ink-soft); max-width: 54ch; margin-bottom: 34px; }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 16px;
+    text-decoration: none; padding: 12px 24px; border-radius: 3px;
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); border: 1px solid var(--ink); }
+  .btn-primary:hover { background: #1C2E44; }
+  .btn-secondary { color: var(--ink); border: 1px solid var(--rule); background: transparent; }
+  .btn-secondary:hover { border-color: var(--ink); }
+
+  .viz-panel { text-align: center; }
+  .viz-frame {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 18px 18px 10px; display: inline-block;
+    box-shadow: 0 1px 3px rgba(14, 27, 44, 0.06);
+  }
+  .viz-frame canvas { display: block; cursor: pointer; max-width: 100%; }
+  .viz-caption {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    color: var(--ink-soft); margin-top: 10px; padding-bottom: 6px;
+  }
+
+  .stats { border-bottom: 1px solid var(--rule); background: var(--card); }
+  .stats-inner {
+    display: flex; flex-wrap: wrap; gap: 12px 0; padding: 20px 0;
+    font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; color: var(--ink-soft);
+  }
+  .stats-inner span { padding-right: 18px; margin-right: 18px; border-right: 1px solid var(--rule); }
+  .stats-inner span:last-child { border-right: none; }
+  .stats-inner b { color: var(--ink); font-weight: 500; }
+
+  section { padding: 76px 0; }
+  section + section { border-top: 1px solid var(--rule); }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--amber-deep); margin-bottom: 14px;
+  }
+  h2 {
+    font-family: 'STIX Two Text', serif; font-weight: 600; font-size: 34px;
+    letter-spacing: -0.01em; margin-bottom: 18px;
+  }
+  h3 { font-family: 'STIX Two Text', serif; font-weight: 600; }
+  .section-intro { color: var(--ink-soft); max-width: 62ch; margin-bottom: 44px; }
+
+  .about-grid { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 56px; }
+  .about-grid p + p { margin-top: 16px; }
+  .edu-list { list-style: none; }
+  .headshot {
+    width: 100%; height: auto; display: block;
+    border: 1px solid var(--rule); border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(14, 27, 44, 0.06);
+    margin-bottom: 28px;
+  }
+  .edu-list li { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  .edu-list li:first-child { padding-top: 4px; }
+  .edu-degree { font-weight: 600; }
+  .edu-meta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+
+  .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .method-card {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 26px 24px 24px; display: flex; flex-direction: column;
+    transition: border-color 0.15s ease;
+  }
+  .method-card:hover { border-color: var(--amber); }
+  .method-motif { height: 72px; margin-bottom: 20px; }
+  .method-name { font-size: 22px; margin-bottom: 4px; }
+  .method-tag { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--amber-deep); margin-bottom: 12px; }
+  .method-desc { font-size: 15.5px; color: var(--ink-soft); flex: 1; }
+  .method-link {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink);
+    text-decoration: none; margin-top: 18px; border-bottom: 1px solid var(--amber);
+    align-self: flex-start; padding-bottom: 1px;
+  }
+  .method-link:hover { color: var(--amber-deep); }
+
+  .gait-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .mini-cards { display: grid; gap: 18px; margin-top: 28px; }
+  .mini-card { border-left: 3px solid var(--amber); padding: 4px 0 4px 18px; }
+  .mini-card h3 { font-size: 19px; margin-bottom: 4px; }
+  .mini-card p { font-size: 15.5px; color: var(--ink-soft); }
+
+  .teach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .teach-grid h3 { font-size: 21px; margin-bottom: 12px; }
+  .plain-list { list-style: none; }
+  .plain-list li { padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 16px; }
+  .plain-list .sub { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); display: block; margin-top: 2px; }
+
+  .now-list { list-style: none; max-width: 720px; }
+  .now-list li {
+    display: grid; grid-template-columns: 110px 1fr; gap: 20px;
+    padding: 16px 0; border-bottom: 1px solid var(--rule);
+  }
+  .now-date { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); padding-top: 2px; }
+
+  .pub-list { list-style: none; max-width: 820px; counter-reset: pub; }
+  .pub-list li {
+    padding: 18px 0; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 34px 1fr; gap: 14px;
+  }
+  .pub-list li::before {
+    counter-increment: pub; content: counter(pub, decimal-leading-zero);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    color: var(--amber-deep); padding-top: 3px;
+  }
+  .pub-title { font-weight: 600; }
+  .pub-venue { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); margin-top: 3px; }
+  .pub-status {
+    display: inline-block; font-size: 11.5px; padding: 1px 8px;
+    border: 1px solid var(--amber); border-radius: 20px;
+    color: var(--amber-deep); margin-left: 8px; vertical-align: 1px; white-space: nowrap;
+  }
+  .all-pubs-link {
+    font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--ink);
+    text-decoration: none; border-bottom: 1px solid var(--amber);
+    padding-bottom: 2px; display: inline-block; margin-top: 28px;
+  }
+  .all-pubs-link:hover { color: var(--amber-deep); }
+
+  footer {
+    border-top: 1px solid var(--rule); background: var(--ink);
+    color: rgba(250, 251, 252, 0.85); padding: 60px 0 40px;
+  }
+  footer h2 { color: var(--paper); }
+  .footer-links { display: flex; gap: 26px; flex-wrap: wrap; margin: 24px 0 44px; }
+  .footer-links a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--paper);
+    text-decoration: none; border-bottom: 1px solid var(--amber); padding-bottom: 2px;
+  }
+  .footer-links a:hover { color: var(--amber); }
+  .colophon {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    color: rgba(250, 251, 252, 0.45);
+    border-top: 1px solid rgba(250, 251, 252, 0.12); padding-top: 22px;
+  }
+
+  @media (max-width: 860px) {
+    .hero-inner { grid-template-columns: 1fr; padding: 52px 0 44px; gap: 40px; }
+    .viz-panel { text-align: left; }
+    .research-grid, .about-grid, .gait-grid, .teach-grid { grid-template-columns: 1fr; gap: 36px; }
+    .nav-links a { margin-left: 12px; font-size: 12px; }
+    section { padding: 56px 0; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="nav-name" href="#">A. Ngorima</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#research">Research</a>
+      <a href="#prosthetics">Prosthetics</a>
+      <a href="#teaching">Teaching</a>
+      <a href="publications.html">Publications</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero grid-bg">
+  <div class="wrap hero-inner">
+    <div>
+      <p class="eyebrow">Dr Simbarashe Aldrin Ngorima <span class="dot">·</span> Postdoctoral Researcher, MUST Deep Learning, North-West University</p>
+      <h1>Deep learning for <span class="accent">signals that move.</span></h1>
+      <p class="subhead">I design efficient, interpretable neural networks for wireless channels, vehicles and the human gait. My doctoral work produced DPA-RDCNN, REACH and TurboQuant, methods that make deep models smaller, faster and easier to trust.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#research">View research</a>
+        <a class="btn btn-secondary" href="assets/Ngorima_CV.pdf">Download CV</a>
+      </div>
+    </div>
+    <div class="viz-panel">
+      <div class="viz-frame">
+        <canvas id="constellation" width="320" height="320" aria-label="A 16QAM constellation diagram equalising from a noisy vehicular channel to clean symbol points"></canvas>
+        <p class="viz-caption">16QAM · VTV channel → equalised<br>tap to replay</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap stats-inner">
+    <span><b>5</b> peer-reviewed publications</span>
+    <span><b>3</b> IEEE submissions under review</span>
+    <span><b>4.16 ms</b> single-frame inference</span>
+    <span>PhD, Computer &amp; Electronic Engineering</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div>
+      <p class="section-label">About</p>
+      <h2>From vehicular channels to the human gait</h2>
+      <p>I am a postdoctoral researcher in the MUST Deep Learning group at North-West University, affiliated with the Centre for Artificial Intelligence Research (CAIR) and NITheCS. My research develops gradient-based attribution methods and structured compression techniques for deep neural networks applied to time-series problems.</p>
+      <p>My PhD focused on channel estimation for IEEE 802.11p vehicular communication, producing five peer-reviewed publications and three IEEE journal submissions currently under review. The postdoctoral work carries the same methodology into deep learning for prosthetics, including gait phase prediction, metabolic cost estimation and inter-subject domain adaptation for wearable sensing.</p>
+      <p>Beyond research, I serve as Communications Chairperson for the Deep Learning Indaba, the largest machine learning organisation in Africa, and lecture Signal Theory to third-year engineering students.</p>
+    </div>
+    <div>
+      <img class="headshot" src="assets/aldrin.jpg" alt="Aldrin Ngorima smiling on a suspension bridge in Potchefstroom" width="900" height="703">
+      <p class="section-label">Education</p>
+      <ul class="edu-list">
+        <li>
+          <span class="edu-degree">PhD, Computer &amp; Electronic Engineering</span>
+          <span class="edu-meta">North-West University · 2022–2025<br>Supervised by Prof. Marelie H. Davel &amp; Prof. Albert S.J. Helberg<br>NITheCS Doctoral Scholarship · Telkom CoE · CAIR</span>
+        </li>
+        <li>
+          <span class="edu-degree">MEng, Computer &amp; Electronic Engineering</span>
+          <span class="edu-meta">North-West University · 2020–2021<br>NRF Master's Scholarship</span>
+        </li>
+        <li>
+          <span class="edu-degree">BEng, Electronic Engineering</span>
+          <span class="edu-meta">Parul University · 2015–2019</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="wrap">
+    <p class="section-label">Doctoral research</p>
+    <h2>Three methods, one thread</h2>
+    <p class="section-intro">Vehicular wireless channels change faster than any classical estimator can comfortably track, and the hardware they run on has no room to spare. My doctoral work makes deep channel estimators accurate, explainable and small, in that order.</p>
+    <div class="research-grid">
+
+      <article class="method-card">
+        <svg class="method-motif" viewBox="0 0 200 72" aria-hidden="true">
+          <g stroke="#0E1B2C" stroke-width="1.4" fill="none" opacity="0.85">
+            <circle cx="20" cy="60" r="3.5" fill="#0E1B2C"/><circle cx="52" cy="60" r="3.5" fill="#0E1B2C"/><circle cx="84" cy="60" r="3.5" fill="#0E1B2C"/><circle cx="116" cy="60" r="3.5" fill="#0E1B2C"/><circle cx="148" cy="60" r="3.5" fill="#0E1B2C"/><circle cx="180" cy="60" r="3.5" fill="#0E1B2C"/>
+            <circle cx="52" cy="36" r="3.5" fill="#E8A33D" stroke="#E8A33D"/><circle cx="116" cy="36" r="3.5" fill="#E8A33D" stroke="#E8A33D"/><circle cx="180" cy="36" r="3.5" fill="#E8A33D" stroke="#E8A33D"/>
+            <circle cx="116" cy="12" r="4.5" fill="#0E1B2C"/>
+            <path d="M20 56 L52 40 M52 56 L52 40 M84 56 L116 40 M116 56 L116 40 M148 56 L180 40 M180 56 L180 40" />
+            <path d="M52 32 L116 17 M116 32 L116 17 M180 32 L116 17" stroke="#C77F1A"/>
+          </g>
+        </svg>
+        <h3 class="method-name">DPA-RDCNN</h3>
+        <p class="method-tag">vehicular channel estimation</p>
+        <p class="method-desc">A temporal convolutional architecture with data pilot-aided refinement for IEEE 802.11p channels. It tracks fast vehicular fading across six standard channel models and runs at 4.16 ms single-frame latency, fast enough for real deployment.</p>
+        <a class="method-link" href="publications.html">Read the paper →</a>
+      </article>
+
+      <article class="method-card">
+        <svg class="method-motif" viewBox="0 0 200 72" aria-hidden="true">
+          <g>
+            <rect x="18" y="10" width="24" height="24" fill="#0E1B2C" opacity="0.12"/>
+            <rect x="46" y="10" width="24" height="24" fill="#E8A33D" opacity="0.9"/>
+            <rect x="74" y="10" width="24" height="24" fill="#0E1B2C" opacity="0.25"/>
+            <rect x="102" y="10" width="24" height="24" fill="#0E1B2C" opacity="0.08"/>
+            <rect x="130" y="10" width="24" height="24" fill="#C77F1A" opacity="0.75"/>
+            <rect x="158" y="10" width="24" height="24" fill="#0E1B2C" opacity="0.15"/>
+            <rect x="18" y="38" width="24" height="24" fill="#0E1B2C" opacity="0.06"/>
+            <rect x="46" y="38" width="24" height="24" fill="#0E1B2C" opacity="0.3"/>
+            <rect x="74" y="38" width="24" height="24" fill="#E8A33D" opacity="0.55"/>
+            <rect x="102" y="38" width="24" height="24" fill="#0E1B2C" opacity="0.18"/>
+            <rect x="130" y="38" width="24" height="24" fill="#0E1B2C" opacity="0.1"/>
+            <rect x="158" y="38" width="24" height="24" fill="#E8A33D" opacity="0.35"/>
+          </g>
+        </svg>
+        <h3 class="method-name">REACH</h3>
+        <p class="method-tag">gradient-based interpretability</p>
+        <p class="method-desc">An interpretability framework that identifies which features and filters a channel estimator actually relies on, then turns that evidence into a principled guide for architecture compression across channel conditions.</p>
+        <a class="method-link" href="https://arxiv.org/abs/2606.11857">Read the preprint →</a>
+      </article>
+
+      <article class="method-card">
+        <svg class="method-motif" viewBox="0 0 200 72" aria-hidden="true">
+          <g fill="none" stroke-width="1.6">
+            <path d="M14 60 C 50 10, 90 65, 130 22 S 186 40, 186 40" stroke="#0E1B2C" opacity="0.3"/>
+            <path d="M14 56 H 46 V 26 H 82 V 50 H 118 V 20 H 154 V 38 H 186" stroke="#C77F1A"/>
+          </g>
+        </svg>
+        <h3 class="method-name">TurboQuant</h3>
+        <p class="method-tag">attribution-guided compression</p>
+        <p class="method-desc">Joint interpretability-guided pruning and near-optimal Lloyd-Max weight quantisation for deep vehicular channel estimators, shrinking models for edge deployment while preserving bit error rate performance.</p>
+        <a class="method-link" href="publications.html">Read the paper →</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="prosthetics" class="grid-bg">
+  <div class="wrap gait-grid">
+    <div>
+      <p class="section-label">Postdoctoral research</p>
+      <h2>The same mathematics, walking</h2>
+      <p style="color: var(--ink-soft); max-width: 56ch;">A vehicular channel and a walking human are both fast-changing time-series measured by imperfect sensors. My postdoctoral work carries interpretability and compression methods from wireless communication into deep learning for prosthetics and exoskeletons.</p>
+      <div class="mini-cards">
+        <div class="mini-card">
+          <h3>Gait phase prediction</h3>
+          <p>Multi-source domain adaptation that lets gait models transfer across subjects, so a prosthetic controller trained on one group of people generalises to a new wearer.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Metabolic cost estimation</h3>
+          <p>Predicting the energetic cost of walking from wearable sensors such as EMG and joint kinematics, working towards assistive devices that adapt to how hard the wearer is actually working.</p>
+        </div>
+      </div>
+    </div>
+    <div class="viz-panel">
+      <div class="viz-frame">
+        <canvas id="gait" width="360" height="240" aria-label="An animated gait cycle showing walking legs alongside the knee flexion curve with a live phase readout"></canvas>
+        <p class="viz-caption">gait cycle · knee flexion · live phase readout<br>tap to pause</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="teaching">
+  <div class="wrap">
+    <p class="section-label">Teaching &amp; service</p>
+    <h2>In the lecture hall and the community</h2>
+    <div class="teach-grid">
+      <div>
+        <h3>Teaching &amp; supervision</h3>
+        <ul class="plain-list">
+          <li>Lecturer, Signal Theory (3rd year)<span class="sub">North-West University · second semester 2026</span></li>
+          <li>Supervisor, final-year design projects<span class="sub">4th year Computer &amp; Electronic Engineering</span></li>
+          <li>Available for: deep learning for time-series, ML for communications, signal processing, applied probability, scientific programming in Python and MATLAB</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Academic service</h3>
+        <ul class="plain-list">
+          <li>Communications Chairperson, Deep Learning Indaba<span class="sub">2023–present · the largest African machine learning organisation</span></li>
+          <li>Communications Champion, MUST Deep Learning<span class="sub">2023–present</span></li>
+          <li>Publication award for five publications during PhD studies<span class="sub">North-West University · 2026</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="now">
+  <div class="wrap">
+    <p class="section-label">Now</p>
+    <h2>What I am working on</h2>
+    <ul class="now-list">
+      <li><span class="now-date">Jul 2026</span><span>Preparing to lecture Signal Theory to third-year engineering students at North-West University.</span></li>
+      <li><span class="now-date">Jun 2026</span><span>Submitted the revised DPA-RDCNN manuscript to IEEE Access after a full editorial pass with my supervisors.</span></li>
+      <li><span class="now-date">Jun 2026</span><span>Communications for Deep Learning Indaba 2026 in Lagos, announcing keynote speakers across four platforms.</span></li>
+      <li><span class="now-date">May 2026</span><span>Extending interpretability and compression methods to gait phase prediction and metabolic cost estimation for prosthetics.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="publications">
+  <div class="wrap">
+    <p class="section-label">Publications</p>
+    <h2>Selected work</h2>
+    <ol class="pub-list">
+      <li><span><span class="pub-title">Convolutional DPA Refinement for Real-Time Channel Estimation in High-Mobility Vehicular Networks</span><span class="pub-status">under review</span><br><span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE Access</span></span></li>
+      <li><span><span class="pub-title">REACH: Interpretability-Driven Feature Identification and Architecture Compression for Multi-Channel Vehicular Channel Estimation</span><span class="pub-status">under review</span><br><span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE TMLCN · arXiv:2606.11857</span></span></li>
+      <li><span><span class="pub-title">Joint Interpretability-Guided Pruning and Near-Optimal Weight Quantisation for Deep Vehicular Channel Estimators</span><span class="pub-status">under review</span><br><span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE GLOBECOM 2026</span></span></li>
+      <li><span><span class="pub-title">Simplified Temporal Convolutional Based Channel Estimation for a WiFi Vehicular Communication Channel</span><br><span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · IEEE VTS Wireless Africa Conference, 2025</span></span></li>
+      <li><span><span class="pub-title">Sequence-Based Deep Neural Networks for Channel Estimation in Vehicular Communication Systems</span><br><span class="pub-venue">Ngorima, S.A., Helberg, A.S.J. &amp; Davel, M.H. · CCIS vol. 1976, Springer, 2023</span></span></li>
+    </ol>
+    <a class="all-pubs-link" href="publications.html">View all publications →</a>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <h2>Get in touch</h2>
+    <p style="max-width: 54ch;">I am open to research collaboration, speaking invitations and conversations about efficient and interpretable deep learning.</p>
+    <div class="footer-links">
+      <a href="mailto:aldringorima@gmail.com">Email</a>
+      <a href="https://scholar.google.com/citations?user=7IZaxCMAAAAJ&amp;hl=en">Google Scholar</a>
+      <a href="https://www.linkedin.com/in/simbarashe-aldrin-ngorima-5ab027120/">LinkedIn</a>
+      <a href="#">GitHub</a>
+      <a href="https://orcid.org/0000-0002-0775-3529">ORCID</a>
+    </div>
+    <p class="colophon">© 2026 Simbarashe Aldrin Ngorima · Potchefstroom, South Africa · Set in STIX Two Text, the typeface of scientific publishing</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- Constellation: noisy VTV channel equalising to clean 16QAM ---------- */
+(function () {
+  const canvas = document.getElementById('constellation');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const size = 320;
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+  ctx.scale(dpr, dpr);
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pad = 34;
+  const span = size - 2 * pad;
+  const map = v => pad + ((v + 3) / 6) * span;
+  const POINTS_PER_SYMBOL = 7;
+  let particles = [];
+
+  function gaussian() {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  function initParticles() {
+    particles = [];
+    const levels = [-3, -1, 1, 3];
+    for (const i of levels) for (const q of levels) {
+      for (let n = 0; n < POINTS_PER_SYMBOL; n++) {
+        const nI = gaussian() * 0.62, nQ = gaussian() * 0.62;
+        const a = 0.35;
+        const si = (i + nI) * Math.cos(a) - (q + nQ) * Math.sin(a);
+        const sq = (i + nI) * Math.sin(a) + (q + nQ) * Math.cos(a);
+        particles.push({
+          sx: map(si), sy: map(-sq),
+          tx: map(i + gaussian() * 0.05), ty: map(-(q + gaussian() * 0.05))
+        });
+      }
+    }
+  }
+
+  const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  function drawAxes() {
+    ctx.strokeStyle = 'rgba(14,27,44,0.12)';
+    ctx.lineWidth = 1;
+    [-3, -1, 1, 3].forEach(v => {
+      ctx.beginPath(); ctx.moveTo(map(v), pad - 10); ctx.lineTo(map(v), size - pad + 10); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad - 10, map(v)); ctx.lineTo(size - pad + 10, map(v)); ctx.stroke();
+    });
+    ctx.strokeStyle = 'rgba(14,27,44,0.3)';
+    ctx.beginPath(); ctx.moveTo(map(0), pad - 16); ctx.lineTo(map(0), size - pad + 16); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad - 16, map(0)); ctx.lineTo(size - pad + 16, map(0)); ctx.stroke();
+    ctx.fillStyle = 'rgba(14,27,44,0.45)';
+    ctx.font = '11px "IBM Plex Mono", monospace';
+    ctx.fillText('I', size - pad + 20, map(0) + 4);
+    ctx.fillText('Q', map(0) - 4, pad - 22);
+  }
+
+  function render(t) {
+    ctx.clearRect(0, 0, size, size);
+    drawAxes();
+    const e = ease(t);
+    for (const p of particles) {
+      const x = p.sx + (p.tx - p.sx) * e;
+      const y = p.sy + (p.ty - p.sy) * e;
+      const r = Math.round(14 + 218 * e), g = Math.round(27 + 136 * e), b = Math.round(44 + 17 * e);
+      ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + (0.55 + 0.4 * e) + ')';
+      ctx.beginPath();
+      ctx.arc(x, y, 2.6 + 0.6 * e, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  let animId = null;
+  function play() {
+    if (animId) cancelAnimationFrame(animId);
+    initParticles();
+    if (reduceMotion) { render(1); return; }
+    const DURATION = 2600, DELAY = 500;
+    const start = performance.now() + DELAY;
+    function frame(now) {
+      const t = Math.min(Math.max((now - start) / DURATION, 0), 1);
+      render(t);
+      if (t < 1) animId = requestAnimationFrame(frame);
+    }
+    animId = requestAnimationFrame(frame);
+  }
+  canvas.addEventListener('click', play);
+  play();
+})();
+
+/* ---------- Gait cycle: walking legs + knee flexion trace + phase readout ---------- */
+(function () {
+  const canvas = document.getElementById('gait');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = 360, H = 240;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const INK = '#0E1B2C', SOFT = 'rgba(14,27,44,0.45)', AMBER = '#E8A33D', AMBER_DEEP = '#C77F1A';
+  const CYCLE_MS = 1700;
+  const HIP = { x: 88, y: 66 };
+  const L1 = 58, L2 = 54, FOOT = 16;
+  const GROUND_Y = HIP.y + L1 + L2 + 6;
+
+  // joint angle approximations over the gait cycle (t in [0,1), degrees)
+  const hipAngle = t => 27 * Math.cos(2 * Math.PI * t) - 3;
+  const kneeAngle = t => {
+    const g = (c, s) => Math.exp(-Math.pow(((t % 1 + 1) % 1) - c, 2) / (2 * s * s));
+    return 15 * (g(0.12, 0.06) + g(1.12, 0.06)) + 62 * (g(0.72, 0.09) + g(-0.28, 0.09)) + 3;
+  };
+  const rad = d => d * Math.PI / 180;
+
+  function legPoints(t) {
+    const h = rad(hipAngle(t));
+    const s = rad(hipAngle(t) - kneeAngle(t));
+    const knee = { x: HIP.x + L1 * Math.sin(h), y: HIP.y + L1 * Math.cos(h) };
+    const ankle = { x: knee.x + L2 * Math.sin(s), y: knee.y + L2 * Math.cos(s) };
+    const toe = { x: ankle.x + FOOT * Math.cos(s * 0.3), y: ankle.y + 4 };
+    return { knee, ankle, toe };
+  }
+
+  function drawLeg(t, colour, width) {
+    const { knee, ankle, toe } = legPoints(t);
+    ctx.strokeStyle = colour;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(HIP.x, HIP.y);
+    ctx.lineTo(knee.x, knee.y);
+    ctx.lineTo(ankle.x, ankle.y);
+    ctx.lineTo(toe.x, toe.y);
+    ctx.stroke();
+    ctx.fillStyle = colour;
+    [HIP, knee, ankle].forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 3.2, 0, Math.PI * 2); ctx.fill();
+    });
+  }
+
+  // knee-flexion plot geometry
+  const PLOT = { x: 186, y: 48, w: 158, h: 120 };
+  const px = t => PLOT.x + t * PLOT.w;
+  const py = a => PLOT.y + PLOT.h - (a / 80) * PLOT.h;
+
+  function drawScene(t, groundOffset) {
+    ctx.clearRect(0, 0, W, H);
+
+    // ground with treadmill dashes
+    ctx.strokeStyle = 'rgba(14,27,44,0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(20, GROUND_Y); ctx.lineTo(166, GROUND_Y); ctx.stroke();
+    ctx.strokeStyle = 'rgba(14,27,44,0.18)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 8; i++) {
+      const dx = 20 + ((i * 22 - groundOffset) % 146 + 146) % 146;
+      ctx.beginPath(); ctx.moveTo(dx, GROUND_Y + 5); ctx.lineTo(dx + 10, GROUND_Y + 5); ctx.stroke();
+    }
+
+    // torso hint
+    ctx.strokeStyle = SOFT;
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(HIP.x, HIP.y); ctx.lineTo(HIP.x + 3, HIP.y - 34); ctx.stroke();
+    ctx.beginPath(); ctx.arc(HIP.x + 4, HIP.y - 44, 8, 0, Math.PI * 2); ctx.stroke();
+
+    // legs: contralateral in soft ink, instrumented leg in amber
+    drawLeg(t + 0.5, 'rgba(14,27,44,0.28)', 4);
+    drawLeg(t, AMBER_DEEP, 4.5);
+
+    // plot frame
+    ctx.strokeStyle = 'rgba(14,27,44,0.25)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(PLOT.x, PLOT.y, PLOT.w, PLOT.h);
+
+    // stance region shading (0–60%)
+    ctx.fillStyle = 'rgba(232,163,61,0.10)';
+    ctx.fillRect(PLOT.x, PLOT.y, PLOT.w * 0.6, PLOT.h);
+    ctx.fillStyle = SOFT;
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillText('stance', PLOT.x + 6, PLOT.y + 13);
+    ctx.fillText('swing', PLOT.x + PLOT.w * 0.6 + 6, PLOT.y + 13);
+
+    // knee flexion curve
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let i = 0; i <= 100; i++) {
+      const tt = i / 100;
+      const x = px(tt), y = py(kneeAngle(tt));
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // cursor + marker
+    const phase = ((t % 1) + 1) % 1;
+    ctx.strokeStyle = 'rgba(199,127,26,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(px(phase), PLOT.y); ctx.lineTo(px(phase), PLOT.y + PLOT.h); ctx.stroke();
+    ctx.fillStyle = AMBER;
+    ctx.beginPath(); ctx.arc(px(phase), py(kneeAngle(phase)), 4, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // labels + live phase readout
+    ctx.fillStyle = SOFT;
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillText('knee flexion (deg)', PLOT.x, PLOT.y - 8);
+    ctx.fillText('% gait cycle', PLOT.x + PLOT.w - 66, PLOT.y + PLOT.h + 14);
+    ctx.fillStyle = INK;
+    ctx.font = '13px "IBM Plex Mono", monospace';
+    ctx.fillText('phase ' + String(Math.round(phase * 100)).padStart(2, '0') + ' %', PLOT.x, PLOT.y + PLOT.h + 32);
+  }
+
+  let running = !reduceMotion;
+  let animId = null;
+  let t0 = performance.now();
+  let pausedAt = 0.3;
+
+  function loop(now) {
+    const t = ((now - t0) / CYCLE_MS) % 1;
+    pausedAt = t;
+    drawScene(t, (now - t0) / CYCLE_MS * 146);
+    if (running) animId = requestAnimationFrame(loop);
+  }
+
+  if (running) {
+    animId = requestAnimationFrame(loop);
+  } else {
+    drawScene(0.3, 0);
+  }
+
+  canvas.addEventListener('click', function () {
+    if (reduceMotion) return;
+    running = !running;
+    if (running) {
+      t0 = performance.now() - pausedAt * CYCLE_MS;
+      animId = requestAnimationFrame(loop);
+    } else if (animId) {
+      cancelAnimationFrame(animId);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
